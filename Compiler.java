@@ -31,7 +31,7 @@ import java.lang.Runtime;
 import java.lang.Process;
 
 public class Compiler {
-	public static boolean validateArgs(String[] args) {
+	private static boolean validateArgs(String[] args) {
 		if(args.length < 1) {
 			System.err.println("Invalid argument count.");
 			System.err.println("Proper Usage:");
@@ -40,18 +40,18 @@ public class Compiler {
 		}
 		return true;
 	}
-	public static boolean sourceExists(String fname) {
+	private static boolean sourceExists(String fname) {
 		File src = new File(fname);
 		return src.exists();
 	}
-	public static String getOutputFile(String[] args) {
+	private static String getOutputFile(String[] args) {
 		if(args.length == 2) {
 			return args[1];
 		} else {
 			return "bf.java";
 		}
 	}
-	public static String readFile(String fname) {
+	private static String readFile(String fname) {
 		String source = "";
 		try {
 			Reader reader = new FileReader(new File(fname));
@@ -65,7 +65,7 @@ public class Compiler {
 		}
 		return source;
 	}
-	public static String stripFormat(String baseSource) {
+	private static String stripFormat(String baseSource) {
 		// A fun note here:
 		// We use "\\-" in order to pass the literal '-'.
 		// '-' is a special character in regexes, so we escape it as '\-'
@@ -79,7 +79,7 @@ public class Compiler {
 		String regex = "[^><+\\-.,\\[\\]]";
 		return baseSource.replaceAll(regex,"");
 	}
-	public static String getTranslation(char token) {
+	private static String getTranslation(char token) {
 		switch(token) {
 			case '>':	return "ptr++;\n";
 			case '<':	return "ptr--;\n";
@@ -93,7 +93,7 @@ public class Compiler {
 		// unreachable, given that we've stripped all other characters
 		return "";
 	}
-	public static String translate(String source) {
+	private static String translate(String source) {
 		String out = "";
 		int braceCount = 0;
 		try {
@@ -120,7 +120,7 @@ public class Compiler {
 		}
 		return out;
 	}
-	public static String genWrapper(String className) {
+	private static String genWrapper(String className) {
 		String head = "";
 		head += "import java.util.Scanner;\n";
 		head += "public class " + className.substring(0,className.indexOf('.')) + " {\n";
@@ -130,14 +130,14 @@ public class Compiler {
 		head += "int ptr = 0;\n";
 		return head;
 	}
-	public static String genTail() {
+	private static String genTail() {
 		String tail = "";
 		tail += "iostream.close();\n";
 		tail += "}\n"; // close main method
 		tail += "}\n"; // close class body
 		return tail;
 	}
-	public static void writeJavaSource(String outName, String header, String body, String tail) {
+	private static void writeJavaSource(String outName, String header, String body, String tail) {
 		String program = header + body + tail;
 		File outSource = new File(outName);
 		try {
